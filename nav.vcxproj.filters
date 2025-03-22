@@ -18,9 +18,15 @@
     <ClInclude Include="nav_engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="nav_engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

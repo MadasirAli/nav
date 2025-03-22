@@ -3,60 +3,91 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
-#include <utility>
 #include <array>
 
+#include "vector2.h"
+#include "path.h"
+
 namespace nav {
-  //class nav_engine
-  //{
-  //public:
-  //  struct config {
-  //    uint32_t fallHeight = -1;
-  //  };
+  class nav_engine
+  {
+  public:
+    struct config {
+      bool findDiagnals = false;
+      //bool fallHeight = -1;
+    };
 
-  //private:
-  //  enum class neighbour_index {
-  //    left,
-  //    right,
-  //    top,
-  //    bottom
-  //  };
-  //  struct node {
-  //    uint32_t x = 0;
-  //    uint32_t y = 0;
+  private:
+    struct node {
+      base::vector2_int pos = { 0,0 };
+      base::vector2_int parent = { 0,0 };
 
-  //    uint32_t g = 0;
-  //    uint32_t h = 0;
-  //    uint32_t cost = 0;
+      uint32_t cost = 0;
 
-  //    uint32_t get_f() const {
-  //      return (g + h + cost);
-  //    }
-  //  };
-  //private:
-  //  static constexpr const size_t _max_neighbours = 4;
-  //  static constexpr const size_t _find_nodes_reserve = 256;
-  //public:
-  //  nav_engine(uint32_t width, uint32_t height);
-  //  std::vector<std::pair<uint32_t, uint32_t>> find(uint32_t aX, uint32_t aY, uint32_t bX, uint32_t bY);
+      bool is_open = false;
+      bool is_closed = false;
+    private:
+      uint32_t _g = 0;
+      uint32_t _h = 0;
 
-  //  void set_costs(std::unique_ptr<uint32_t[]>&& pCosts);
-  //  void set_config(const config& config);
-  //private:
-  //  void reset_graph();
+    public:
+      inline uint32_t get_g() const {
+        return _g + cost;
+      }
+      inline uint32_t get_h() const {
+        return _h;
+      }
+      inline uint32_t get_f() const {
+        return (get_g() + get_h());
+      }
 
-  //  void update_neighbours(uint32_t x, uint32_t y, uint32_t dX, uint32_t dY, node lastNode);
-  //  std::pair<uint32_t, uint32_t> get_optimal_node() const;
+      void set_g(uint32_t g) {
+        _g = g;
+      }
+      void set_h(uint32_t h) {
+        _h = h;
+      }
 
-  //  inline uint32_t calc_distance(uint32_t x, uint32_t y, uint32_t dX, uint32_t dY);
+      void reset_weights() {
+        _g = 0;
+        _h = 0;
+      }
+    };
+    struct state {
+      uint32_t openNodeCount = 0;
+      base::vector2_int optimalOpenNode = { 0,0 };
 
-  //private:
-  //  const uint32_t _width;
-  //  const uint32_t _height;
-  //  std::unique_ptr<node[]> _pNodes;
-  //  std::unique_ptr<uint32_t[]> _pCosts;
+      void reset() {
+        openNodeCount = 0;
+        optimalOpenNode = { 0,0 };
+      }
+    };
 
-  //  config _config = { 0 };
-  //};
+    static constexpr size_t _max_neighbours = 8;
+
+  public:
+    nav_engine(base::vector2_int size, const config& conf);
+
+    void set_open(base::vector2_int pos, bool status);
+    void get_neighbours(base::vector2_int pos, std::array<size_t, _max_neighbours>& out_result,
+      bool getDiagnals);
+
+    path find(base::vector2_int start, base::vector2_int end);
+
+    void set_costs(const uint32_t* pCosts);
+    void set_cost(base::vector2_int pos, uint32_t cost);
+
+    void set_conf(const config& conf);
+
+  private:
+    void reset_graph();
+
+  private:
+    base::vector2_int _size;
+
+    std::unique_ptr<node[]> _pNodes;
+
+    config _config;
+    state _state = { 0 };
+  };
 }
-

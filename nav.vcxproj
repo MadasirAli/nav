@@ -20,9 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="nav_engine.h" />
+    <ClInclude Include="path.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="nav_engine.cpp" />
+    <ClCompile Include="path.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\base\base.vcxproj">
+      <Project>{c3bde5f9-5d2a-47f7-b597-96d52d62a8a1}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
