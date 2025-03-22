@@ -190,7 +190,7 @@ nav::nav_engine::nav_engine(base::vector2_int size, const config& conf) :
   _config(conf)
 {
   for (size_t i = 0; i < _size.to_size(); ++i) {
-    _pNodes[i].pos = { i % size.x, i / size.y };
+    _pNodes[i].pos = { (int)(i % size.x), (int)(i / size.y) };
   }
 }
 
